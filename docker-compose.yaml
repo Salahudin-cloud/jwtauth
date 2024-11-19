@@ -1,0 +1,10 @@
+services:
+  kotlin-jwt-auth:
+    container_name: "kotlin-jwt-auth"
+    image: postgres:17-alpine3.20
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: jwt
+      POSTGRES_USER: kotlin-jwt
+      POSTGRES_DB: kotlin-jwt
