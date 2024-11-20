@@ -7,7 +7,7 @@ import jakarta.persistence.Table
 import java.util.*
 
 @Entity
-@Table(name = "user")
+@Table(name = "user_account")
 data class User(
     @Id
     val uuid: String,
