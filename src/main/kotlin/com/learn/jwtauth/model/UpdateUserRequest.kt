@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank
 import java.util.*
 
 
-data class CreateUserRequest(
+data class UpdateUserRequest(
     @field:NotBlank
     var email : String?,
     @field:NotBlank
@@ -13,7 +13,4 @@ data class CreateUserRequest(
     var password: String?,
     @field:NotBlank
     var role : String?,
-    @field:NotBlank
-    var updateAt: Date?
-
 )

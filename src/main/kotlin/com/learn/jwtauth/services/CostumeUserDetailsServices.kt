@@ -24,7 +24,7 @@ class CostumeUserDetailsServices(private val userRepository: UserRepository) : U
         return User.builder()
             .username(user.username)
             .password(user.password)
-            .roles(user.role)
+            .roles(user.role.uppercase())
             .build()
     }
 }
