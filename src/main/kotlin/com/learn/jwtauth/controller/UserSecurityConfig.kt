@@ -36,7 +36,6 @@ class UserSecurityConfig {
 
 //            .addFilter(JwtAuthenticationFilter())
 //            .addFilter(JwtAuthorizationFilter())
-
         return http.build()
     }
 
