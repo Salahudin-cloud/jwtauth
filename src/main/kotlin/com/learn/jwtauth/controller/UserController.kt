@@ -1,21 +1,8 @@
 package com.learn.jwtauth.controller
 
-import com.learn.jwtauth.entity.User
-import com.learn.jwtauth.model.CreateUserRequest
-import com.learn.jwtauth.model.UpdateUserRequest
-import com.learn.jwtauth.model.UserResponse
-import com.learn.jwtauth.model.WebResponse
+import com.learn.jwtauth.model.*
 import com.learn.jwtauth.services.UserServices
-import org.apache.juli.logging.Log
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import org.hibernate.query.sqm.tree.SqmNode.log
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("api/v1")
@@ -68,12 +55,29 @@ class UserController (val userServices: UserServices) {
         produces = ["application/json"],
     )
     fun deleteUser(@PathVariable("idUser") id:String ) : WebResponse<String> {
-        log.info("id user deleted : $id")
         userServices.delete(id)
         return WebResponse(
             code = 200,
             status = "Ok",
             data = "Data deleted successfully"
+        )
+    }
+
+    @GetMapping(
+        value = ["/user"],
+        produces = ["application/json"]
+    )
+    fun listUser(
+        @RequestParam(value = "currentPage" , defaultValue = "0") currentPage: Int,
+        @RequestParam(value = "itemPerPage" , defaultValue = "10") itemPerPage: Int
+    ): WebResponse<List<UserResponse>> {
+        val requestResponse = ListUserRequest(currentPage, itemPerPage)
+        val res = userServices.list(requestResponse)
+
+        return WebResponse(
+            code = 200,
+            status = "Ok",
+            data = res
         )
     }
 }

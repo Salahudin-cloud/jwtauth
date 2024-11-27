@@ -1,6 +1,7 @@
 package com.learn.jwtauth.services
 
 import com.learn.jwtauth.model.CreateUserRequest
+import com.learn.jwtauth.model.ListUserRequest
 import com.learn.jwtauth.model.UpdateUserRequest
 import com.learn.jwtauth.model.UserResponse
 import org.springframework.context.annotation.Bean
@@ -16,5 +17,7 @@ interface UserServices {
     fun update(uuid: String, updateUserRequest: UpdateUserRequest) : UserResponse
 
     fun delete(uuid: String)
+
+    fun list(listUserRequest: ListUserRequest) : List<UserResponse>
 
 }

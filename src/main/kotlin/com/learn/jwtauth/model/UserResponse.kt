@@ -8,6 +8,8 @@ data class UserResponse(
     var username: String,
     var password: String,
     var role:String,
+    val currentPage: Int? = null,
+    val itemsPerPage : Int? = null,
     val createdAt : Date,
     var updateAt: Date?
 )

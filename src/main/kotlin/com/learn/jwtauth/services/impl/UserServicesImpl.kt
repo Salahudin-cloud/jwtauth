@@ -3,12 +3,14 @@ package com.learn.jwtauth.services.impl
 import com.learn.jwtauth.entity.User
 import com.learn.jwtauth.exception.NotFoundExeption
 import com.learn.jwtauth.model.CreateUserRequest
+import com.learn.jwtauth.model.ListUserRequest
 import com.learn.jwtauth.model.UpdateUserRequest
 import com.learn.jwtauth.model.UserResponse
 import com.learn.jwtauth.repository.UserRepository
 import com.learn.jwtauth.services.UserServices
 import com.learn.jwtauth.validation.ValidationUtils
 import org.hibernate.query.sqm.tree.SqmNode.log
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -71,6 +73,26 @@ class UserServicesImpl(
         userRepository.delete(getUser)
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    override fun list(listUserRequest: ListUserRequest): List<UserResponse> {
+        val page = userRepository.findAll(PageRequest.of(listUserRequest.currentPage, listUserRequest.itemsPerPage))
+
+        return page.content.map {
+            user -> UserResponse(
+                uuid = user.uuid,
+                email = user.email,
+                username = user.username,
+                password = user.password,
+                role = user.role,
+                currentPage = listUserRequest.currentPage,
+                itemsPerPage = listUserRequest.itemsPerPage,
+                createdAt = user.createdAt,
+                updateAt = user.updateAt
+            )
+        }
+
+    }
+
 
     private fun findUser(uuid: String) : User {
 
@@ -84,13 +106,15 @@ class UserServicesImpl(
     }
 
 
-    private fun userResponse(user: User) : UserResponse {
+    private fun userResponse(user: User, currentPage: Int? = null, itemPerPage:Int? = null) : UserResponse {
         return UserResponse(
             uuid = user.uuid,
             email = user.email,
             username = user.username,
             password = user.password,
             role = user.role,
+            currentPage = currentPage,
+            itemsPerPage = itemPerPage,
             createdAt = user.createdAt,
             updateAt = user.updateAt
         )
