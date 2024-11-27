@@ -49,7 +49,6 @@ class UserController (val userServices: UserServices) {
             data = userResponse
         )
     }
-
     @DeleteMapping(
         value = ["/user/{idUser}"],
         produces = ["application/json"],
