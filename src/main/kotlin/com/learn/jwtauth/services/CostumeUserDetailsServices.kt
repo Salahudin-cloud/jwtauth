@@ -13,12 +13,9 @@ import org.springframework.stereotype.Service
 class CostumeUserDetailsServices(private val userRepository: UserRepository) : UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails {
 
-        log.info("Loading user by username: $username")
-
         val user = userRepository.findByUsername(username)
             ?: throw UsernameNotFoundException("User not found with username: $username")
 
-        log.info("User found: ${user.username}")
 
 
         return User.builder()

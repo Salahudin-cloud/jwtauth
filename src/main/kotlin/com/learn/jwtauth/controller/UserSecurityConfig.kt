@@ -1,5 +1,7 @@
 package com.learn.jwtauth.controller
 
+import com.learn.jwtauth.filter.JwtAuthenticationFilter
+import com.learn.jwtauth.filter.JwtAuthorizationFilter
 import com.learn.jwtauth.repository.UserRepository
 import com.learn.jwtauth.services.CostumeUserDetailsServices
 import org.springframework.context.annotation.Bean
@@ -28,10 +30,12 @@ class UserSecurityConfig {
         http
             .csrf{it.disable()}
             .authorizeHttpRequests {
+                it.requestMatchers("login", "register").permitAll()
                 it.anyRequest().authenticated()
             }
 
-            .httpBasic {  }
+//            .addFilter(JwtAuthenticationFilter())
+//            .addFilter(JwtAuthorizationFilter())
 
         return http.build()
     }
