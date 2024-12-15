@@ -65,11 +65,7 @@ class UserServicesImpl(
     @PreAuthorize("hasRole('ADMIN')")
     override fun delete(uuid: String) {
 
-        log.info("get user id want to delete : $uuid" )
         val getUser = findUser(uuid)
-
-        log.info("get user : $getUser" )
-
         userRepository.delete(getUser)
     }
 
