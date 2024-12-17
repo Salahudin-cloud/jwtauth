@@ -13,10 +13,9 @@ class JwtUtils {
     private val secretKey: SecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 
 
-    fun generateToken (username : String, roles: Set<String>) : String {
+    fun generateToken (username : String) : String {
         val claims = HashMap<String, Any>()
         return Jwts.builder()
-            .setClaims(mapOf("roles" to roles))
             .setSubject(username)
             .setIssuedAt(Date())
             .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))

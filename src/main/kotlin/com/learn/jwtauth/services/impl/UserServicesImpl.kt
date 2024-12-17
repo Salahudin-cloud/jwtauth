@@ -1,7 +1,7 @@
 package com.learn.jwtauth.services.impl
 
 import com.learn.jwtauth.entity.User
-import com.learn.jwtauth.exception.NotFoundExeption
+import com.learn.jwtauth.exception.NotFoundException
 import com.learn.jwtauth.model.CreateUserRequest
 import com.learn.jwtauth.model.ListUserRequest
 import com.learn.jwtauth.model.UpdateUserRequest
@@ -94,7 +94,7 @@ class UserServicesImpl(
 
         val user = userRepository.findByIdOrNull(uuid)
         if (user == null) {
-            throw NotFoundExeption()
+            throw NotFoundException()
         }else {
             return user
         }
