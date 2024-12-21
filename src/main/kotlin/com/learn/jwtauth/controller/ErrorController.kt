@@ -29,7 +29,7 @@ class ErrorController {
         )
     }
 
-    @ExceptionHandler(NotFoundException::class)
+    @ExceptionHandler(AuthenticatedException::class)
     fun failedToLogin(err: AuthenticatedException) : WebResponse<String> {
         return WebResponse(
             code = 404,

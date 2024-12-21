@@ -9,14 +9,12 @@ import com.learn.jwtauth.model.UserResponse
 import com.learn.jwtauth.repository.UserRepository
 import com.learn.jwtauth.services.UserServices
 import com.learn.jwtauth.validation.ValidationUtils
-import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
-
 
 @Service
 class UserServicesImpl(
