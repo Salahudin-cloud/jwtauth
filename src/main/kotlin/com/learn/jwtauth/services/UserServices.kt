@@ -20,4 +20,6 @@ interface UserServices {
 
     fun list(listUserRequest: ListUserRequest) : List<UserResponse>
 
+    fun getUserByUsername(username : String) : UserResponse
+
 }

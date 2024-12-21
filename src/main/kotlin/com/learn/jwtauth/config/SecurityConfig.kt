@@ -10,7 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
-class SecurityConfig  {
+class SecurityConfig (
+    private  val jwtAuthenticationFilter : JwtAuthenticationFilter
+) {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
@@ -23,7 +25,7 @@ class SecurityConfig  {
         http
             .csrf{it.disable()}
             .authorizeHttpRequests{
-                it.requestMatchers("/auth/**").permitAll().anyRequest().authenticated()
+                it.requestMatchers("/api/v1/auth/**").permitAll().anyRequest().authenticated()
             }
             .sessionManagement{it.disable()}
 

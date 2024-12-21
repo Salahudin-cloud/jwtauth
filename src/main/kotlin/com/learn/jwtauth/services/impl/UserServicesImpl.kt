@@ -87,6 +87,20 @@ class UserServicesImpl(
 
     }
 
+    override fun getUserByUsername(username: String): UserResponse {
+        val user = userRepository.findByUsername(username) ?: throw NotFoundException()
+        return UserResponse(
+            uuid = user.uuid,
+            email = user.email ,
+            username = user.username,
+            password = user.password,
+            role = user.role,
+            updateAt = user.updateAt,
+            createdAt = user.createdAt
+        )
+
+    }
+
 
     private fun findUser(uuid: String) : User {
 

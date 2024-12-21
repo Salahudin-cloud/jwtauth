@@ -4,6 +4,8 @@ import com.learn.jwtauth.exception.AuthenticatedException
 import com.learn.jwtauth.exception.NotFoundException
 import com.learn.jwtauth.model.WebResponse
 import jakarta.validation.ConstraintViolationException
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -30,12 +32,8 @@ class ErrorController {
     }
 
     @ExceptionHandler(AuthenticatedException::class)
-    fun failedToLogin(err: AuthenticatedException) : WebResponse<String> {
-        return WebResponse(
-            code = 404,
-            status = "Not Found",
-            data = "Wrong username or password"
-        )
+    fun handleAuthenticationException(ex: AuthenticatedException): ResponseEntity<String> {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed")
     }
 
 }

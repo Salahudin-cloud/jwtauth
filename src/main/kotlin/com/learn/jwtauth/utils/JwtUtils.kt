@@ -23,7 +23,7 @@ class JwtUtils {
             .compact()
     }
 
-    private fun extractUsername(token: String): String = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJwt(token).body.subject
+     fun extractUsername(token: String): String = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJwt(token).body.subject
 
     fun validateToken(token : String, username : String) : Boolean {
         val extractedUsername = extractUsername(token)
