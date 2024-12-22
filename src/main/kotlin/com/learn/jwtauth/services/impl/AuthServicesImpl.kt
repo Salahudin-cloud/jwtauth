@@ -9,7 +9,7 @@ import com.learn.jwtauth.utils.JwtUtils
 import com.learn.jwtauth.validation.ValidationUtils
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-
+import org.hibernate.query.sqm.tree.SqmNode.log
 
 @Service
 class AuthServicesImpl (
@@ -19,9 +19,11 @@ class AuthServicesImpl (
     val jwtUtils: JwtUtils
 )  : AuthServices{
     override fun authenticatedUser(authRequest: AuthRequest): AuthResponse {
+
         validationUtils.validate(authRequest)
         val userData = userRepository.findByUsername(authRequest.username)
             ?: throw AuthenticatedException()
+
 
         // Compare the provided password with the hashed password
         if (!passwordEncoder.matches(authRequest.password, userData.password)) {
@@ -29,7 +31,6 @@ class AuthServicesImpl (
         }
         val tokenAuth = jwtUtils.generateToken(authRequest.username)
         return AuthResponse(
-            username = userData.username,
             token = tokenAuth
         )
     }

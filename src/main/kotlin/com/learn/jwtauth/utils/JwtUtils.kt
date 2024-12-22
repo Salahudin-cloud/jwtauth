@@ -1,5 +1,7 @@
 package com.learn.jwtauth.utils
 
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
 import javax.crypto.SecretKey
 import io.jsonwebtoken.SignatureAlgorithm
@@ -23,16 +25,28 @@ class JwtUtils {
             .compact()
     }
 
-     fun extractUsername(token: String): String = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJwt(token).body.subject
-
-    fun validateToken(token : String, username : String) : Boolean {
-        val extractedUsername = extractUsername(token)
-        return  (username == extractedUsername && !isTokenExpired(token))
+    // Extract username from token
+    fun extractUsername(token: String): String {
+        return parseClaimsJws(token).body.subject
     }
 
+    // Validate token
+    fun validateToken(token: String, username: String): Boolean {
+        val extractedUsername = extractUsername(token)
+        return (username == extractedUsername && !isTokenExpired(token))
+    }
+
+    // Check if the token is expired
     private fun isTokenExpired(token: String): Boolean {
-        val expiration = Jwts.parserBuilder().setSigningKey(secretKey).build()
-            .parseClaimsJwt(token).body.expiration
+        val expiration = parseClaimsJws(token).body.expiration
         return expiration.before(Date())
+    }
+
+    // Helper method to parse claims from the token (JWS format)
+    private fun parseClaimsJws(token: String): Jws<Claims> {
+        return Jwts.parserBuilder()
+            .setSigningKey(secretKey)
+            .build()
+            .parseClaimsJws(token)
     }
 }
