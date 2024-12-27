@@ -3,6 +3,7 @@ package com.learn.jwtauth.config
 import com.learn.jwtauth.services.impl.CustumeUserDetailServices
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -42,7 +43,16 @@ class SecurityConfig (
         http
             .csrf{it.disable()}
             .authorizeHttpRequests{
-                it.requestMatchers("/api/v1/auth/**").permitAll().anyRequest().authenticated()
+                // Public endpoints (no authentication required)
+                it.requestMatchers("/api/v1/auth/**").permitAll()
+
+                // Admin-protected endpoints (only accessible by users with ADMIN role)
+                it.requestMatchers(HttpMethod.PUT, "/api/v1/user/**").hasRole("ADMIN")
+                it.requestMatchers(HttpMethod.DELETE, "/api/v1/user/**").hasRole("ADMIN")
+                it.requestMatchers(HttpMethod.POST, "/api/v1/user/**").hasRole("ADMIN")
+
+                // Any other request must be authenticated
+                it.anyRequest().authenticated()
             }
             .sessionManagement{it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)}
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)

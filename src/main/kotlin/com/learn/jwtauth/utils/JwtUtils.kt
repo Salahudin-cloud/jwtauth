@@ -14,16 +14,26 @@ import kotlin.collections.HashMap
 class JwtUtils {
     private val secretKey: SecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 
-
-    fun generateToken (username : String) : String {
-        val claims = HashMap<String, Any>()
+    fun generateToken(username: String, role: String): String {
+        val claims = mapOf("role" to role) // Add the role to the claims
         return Jwts.builder()
+            .setClaims(claims)
             .setSubject(username)
             .setIssuedAt(Date())
-            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
             .signWith(secretKey)
             .compact()
     }
+
+//    fun generateToken (username : String) : String {
+//        val claims = HashMap<String, Any>()
+//        return Jwts.builder()
+//            .setSubject(username)
+//            .setIssuedAt(Date())
+//            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+//            .signWith(secretKey)
+//            .compact()
+//    }
 
     // Extract username from token
     fun extractUsername(token: String): String {
