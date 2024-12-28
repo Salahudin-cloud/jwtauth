@@ -1,7 +1,6 @@
 package com.learn.jwtauth.model
 
 import jakarta.validation.constraints.NotBlank
-import java.util.*
 
 
 data class UpdateUserRequest(
