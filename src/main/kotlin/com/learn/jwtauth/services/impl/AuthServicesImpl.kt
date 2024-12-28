@@ -29,7 +29,9 @@ class AuthServicesImpl (
         if (!passwordEncoder.matches(authRequest.password, userData.password)) {
             throw AuthenticatedException()
         }
-        val tokenAuth = jwtUtils.generateToken(authRequest.username)
+
+
+        val tokenAuth = jwtUtils.generateToken(authRequest.username, userData.role)
         return AuthResponse(
             token = tokenAuth
         )

@@ -22,7 +22,7 @@ class UserServicesImpl(
     val validationUtils: ValidationUtils,
     val passwordEncoder: PasswordEncoder
 ) : UserServices{
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     override fun create(createUserRequest: CreateUserRequest): UserResponse {
         validationUtils.validate(createUserRequest)
         val user = User(
@@ -38,13 +38,13 @@ class UserServicesImpl(
         return userResponse(user)
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     override fun get(uuid: String): UserResponse {
         val getUser = findUser(uuid)
         return userResponse(getUser)
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     override fun update(uuid: String, updateUserRequest: UpdateUserRequest): UserResponse {
         validationUtils.validate(updateUserRequest)
         val user = findUser(uuid)
@@ -60,14 +60,14 @@ class UserServicesImpl(
         return userResponse(user)
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     override fun delete(uuid: String) {
 
         val getUser = findUser(uuid)
         userRepository.delete(getUser)
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     override fun list(listUserRequest: ListUserRequest): List<UserResponse> {
         val page = userRepository.findAll(PageRequest.of(listUserRequest.currentPage, listUserRequest.itemsPerPage))
 

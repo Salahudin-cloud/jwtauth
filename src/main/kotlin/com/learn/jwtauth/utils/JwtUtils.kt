@@ -3,19 +3,19 @@ package com.learn.jwtauth.utils
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
-import javax.crypto.SecretKey
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Component
 import java.util.*
-import kotlin.collections.HashMap
+import javax.crypto.SecretKey
 
 @Component
 class JwtUtils {
     private val secretKey: SecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256)
 
     fun generateToken(username: String, role: String): String {
-        val claims = mapOf("role" to role) // Add the role to the claims
+        val prefixedRole = if (role.startsWith("ROLE_")) role else "ROLE_${role.uppercase(Locale.getDefault())}"
+        val claims = mapOf("role" to prefixedRole) // Add the role to the claims
         return Jwts.builder()
             .setClaims(claims)
             .setSubject(username)
@@ -25,15 +25,9 @@ class JwtUtils {
             .compact()
     }
 
-//    fun generateToken (username : String) : String {
-//        val claims = HashMap<String, Any>()
-//        return Jwts.builder()
-//            .setSubject(username)
-//            .setIssuedAt(Date())
-//            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-//            .signWith(secretKey)
-//            .compact()
-//    }
+    fun getSecretKey() : SecretKey = secretKey
+
+
 
     // Extract username from token
     fun extractUsername(token: String): String {

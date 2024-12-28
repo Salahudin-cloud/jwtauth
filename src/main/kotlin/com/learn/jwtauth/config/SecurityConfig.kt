@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -39,23 +38,18 @@ class SecurityConfig (
 
 
     @Bean
-    fun secuityFilterChain(http: HttpSecurity) : SecurityFilterChain {
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .csrf{it.disable()}
-            .authorizeHttpRequests{
-                // Public endpoints (no authentication required)
-                it.requestMatchers("/api/v1/auth/**").permitAll()
-
-                // Admin-protected endpoints (only accessible by users with ADMIN role)
+            .csrf { it.disable() }
+            .authorizeHttpRequests {
+                it.requestMatchers("/api/v1/auth/**").permitAll() // Public endpoints
+                it.requestMatchers(HttpMethod.POST, "/api/v1/user/**").hasRole("ADMIN") // Admin protected endpoints
                 it.requestMatchers(HttpMethod.PUT, "/api/v1/user/**").hasRole("ADMIN")
                 it.requestMatchers(HttpMethod.DELETE, "/api/v1/user/**").hasRole("ADMIN")
-                it.requestMatchers(HttpMethod.POST, "/api/v1/user/**").hasRole("ADMIN")
-
-                // Any other request must be authenticated
-                it.anyRequest().authenticated()
+                it.anyRequest().authenticated() // All other requests must be authenticated
             }
-            .sessionManagement{it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)}
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java) // Add filter before username/password filter
 
         return http.build()
     }
