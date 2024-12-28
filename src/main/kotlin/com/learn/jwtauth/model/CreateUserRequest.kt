@@ -13,7 +13,5 @@ data class CreateUserRequest(
     var password: String?,
     @field:NotBlank
     var role : String?,
-    @field:NotBlank
     var updateAt: Date?
-
 )

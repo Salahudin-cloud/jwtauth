@@ -1,7 +1,7 @@
 package com.learn.jwtauth.services.impl
 
 import com.learn.jwtauth.entity.User
-import com.learn.jwtauth.exception.NotFoundExeption
+import com.learn.jwtauth.exception.NotFoundException
 import com.learn.jwtauth.model.CreateUserRequest
 import com.learn.jwtauth.model.ListUserRequest
 import com.learn.jwtauth.model.UpdateUserRequest
@@ -9,7 +9,6 @@ import com.learn.jwtauth.model.UserResponse
 import com.learn.jwtauth.repository.UserRepository
 import com.learn.jwtauth.services.UserServices
 import com.learn.jwtauth.validation.ValidationUtils
-import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
@@ -17,14 +16,13 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
 
-
 @Service
 class UserServicesImpl(
     val userRepository: UserRepository,
     val validationUtils: ValidationUtils,
     val passwordEncoder: PasswordEncoder
 ) : UserServices{
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     override fun create(createUserRequest: CreateUserRequest): UserResponse {
         validationUtils.validate(createUserRequest)
         val user = User(
@@ -40,13 +38,13 @@ class UserServicesImpl(
         return userResponse(user)
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     override fun get(uuid: String): UserResponse {
         val getUser = findUser(uuid)
         return userResponse(getUser)
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     override fun update(uuid: String, updateUserRequest: UpdateUserRequest): UserResponse {
         validationUtils.validate(updateUserRequest)
         val user = findUser(uuid)
@@ -62,18 +60,14 @@ class UserServicesImpl(
         return userResponse(user)
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     override fun delete(uuid: String) {
 
-        log.info("get user id want to delete : $uuid" )
         val getUser = findUser(uuid)
-
-        log.info("get user : $getUser" )
-
         userRepository.delete(getUser)
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     override fun list(listUserRequest: ListUserRequest): List<UserResponse> {
         val page = userRepository.findAll(PageRequest.of(listUserRequest.currentPage, listUserRequest.itemsPerPage))
 
@@ -93,12 +87,26 @@ class UserServicesImpl(
 
     }
 
+    override fun getUserByUsername(username: String): UserResponse {
+        val user = userRepository.findByUsername(username) ?: throw NotFoundException()
+        return UserResponse(
+            uuid = user.uuid,
+            email = user.email ,
+            username = user.username,
+            password = user.password,
+            role = user.role,
+            updateAt = user.updateAt,
+            createdAt = user.createdAt
+        )
+
+    }
+
 
     private fun findUser(uuid: String) : User {
 
         val user = userRepository.findByIdOrNull(uuid)
         if (user == null) {
-            throw NotFoundExeption()
+            throw NotFoundException()
         }else {
             return user
         }
